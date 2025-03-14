@@ -27,14 +27,14 @@ jobs:
         run: |
           cd check-argocd
           ver=$(sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml)
-          ver=$((ver+1)
+          ver=$((ver+1))
           docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython:$ver .
 
       - name: Push Docker image
         run: |
           check-argocd
           ver=$(sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml)
-          ver=$((ver+1)
+          ver=$((ver+1))
           docker push ${{ env.DOCKERHUB_USERNAME }}/mypython:$ver
 
       - name: Update values.yaml
