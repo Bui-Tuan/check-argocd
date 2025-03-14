@@ -6,7 +6,7 @@ on:
       - main
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKERHUB_KEY: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   IMAGE_NAME: mypython
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
 
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython .
