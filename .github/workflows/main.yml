@@ -28,3 +28,13 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ env.DOCKERHUB_USERNAME }}/mypython
+
+      - name: Update values.yaml
+        run: |
+          cd check-argocd
+          sed -i 's/\(APP_VERSION: \)\([0-9]\+\)/echo "\1$((\2+1))"/ge' values.yaml 
+          git config --global user.name 'Bui-Tuan'
+          git config --global user.email 'tuanbui13072000@gmail.com'
+          git add values.yaml
+          git commit -m "Update values.yaml"
+          git push
