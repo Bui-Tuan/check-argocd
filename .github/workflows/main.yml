@@ -26,21 +26,18 @@ jobs:
       - name: Build Docker image
         run: |
           cd check-argocd
-          ver=$( sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml )
+          ver=$(sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml)
           ver=$(( $ver + 1 ))
-          docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ ver }} .
+          echo "APP_VERSION=$ver" >> $GITHUB_ENV
+          docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ APP_VERSION }} .
 
       - name: Push Docker image
-        run: |
-          cd check-argocd
-          ver=$( sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml )
-          ver=$(( $ver + 1 ))
-          docker push ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ ver }}
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ APP_VERSION }}
 
       - name: Update values.yaml
         run: |
           cd check-argocd
-          sed -i 's/\(APP_VERSION: \)\([0-9]\+\)/echo "\1$((\2+1))"/ge' values.yaml 
+          sed -i 's|APP_VERSION:.*|APP_VERSION: '${{ APP_VERSION }}'|' values.yaml 
           git config --global user.name 'Bui-Tuan'
           git config --global user.email 'tuanbui13072000@gmail.com'
           git add values.yaml
