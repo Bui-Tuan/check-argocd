@@ -27,7 +27,7 @@ jobs:
         run: |
           cd check-argocd
           ver=$(sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml)
-          ver=$(( $ver + 1 ))
+          ver=$(( ver + 1 ))
           echo "APP_VERSION=$ver" >> $GITHUB_ENV
       - name: Build Docker image
         run: |
@@ -38,7 +38,6 @@ jobs:
 
       - name: Update values.yaml
         run: |
-          cd check-argocd
           sed -i 's|APP_VERSION:.*|APP_VERSION: '${{ env.APP_VERSION }}'|' values.yaml 
           git config --global user.name 'Bui-Tuan'
           git config --global user.email 'tuanbui13072000@gmail.com'
