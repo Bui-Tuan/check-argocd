@@ -23,21 +23,23 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Use extracted APP_VERSION in ENV
         run: |
           cd check-argocd
           ver=$(sed -n 's/^APP_VERSION: \([0-9]\+\)$/\1/p' values.yaml)
           ver=$(( $ver + 1 ))
           echo "APP_VERSION=$ver" >> $GITHUB_ENV
-          docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ APP_VERSION }} .
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ env.APP_VERSION }} .
 
       - name: Push Docker image
-        run: docker push ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ APP_VERSION }}
+        run: docker push ${{ env.DOCKERHUB_USERNAME }}/mypython:${{ env.APP_VERSION }}
 
       - name: Update values.yaml
         run: |
           cd check-argocd
-          sed -i 's|APP_VERSION:.*|APP_VERSION: '${{ APP_VERSION }}'|' values.yaml 
+          sed -i 's|APP_VERSION:.*|APP_VERSION: '${{ env.APP_VERSION }}'|' values.yaml 
           git config --global user.name 'Bui-Tuan'
           git config --global user.email 'tuanbui13072000@gmail.com'
           git add values.yaml
